@@ -26,7 +26,7 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 public class MitmproxyJava {
 
     private static final String LOCALHOST_IP = "127.0.0.1";
-    private static final int WEBSOCKET_PORT = 8765;
+    private int webSocketPort;
     private static final int TIMEOUT_FOR_SOCKET_CHECKING_MINS = 5;
 
     private final String mitmproxyPath;
@@ -45,6 +45,16 @@ public class MitmproxyJava {
         this.mitmproxyPath = mitmproxyPath;
         this.messageInterceptor = messageInterceptor;
         this.proxyPort = proxyPort;
+        this.webSocketPort = 8765;
+        this.extraMitmdumpParams = extraMitmdumpParams;
+    }
+
+    public MitmproxyJava(String mitmproxyPath, Function<InterceptedMessage, InterceptedMessage> messageInterceptor,
+                         int proxyPort, int webSocketPort, List<String> extraMitmdumpParams) {
+        this.mitmproxyPath = mitmproxyPath;
+        this.messageInterceptor = messageInterceptor;
+        this.proxyPort = proxyPort;
+        this.webSocketPort = webSocketPort;
         this.extraMitmdumpParams = extraMitmdumpParams;
     }
 
@@ -55,7 +65,7 @@ public class MitmproxyJava {
     public MitmproxyJava start() throws IOException, TimeoutException {
         log.info("Starting mitmproxy on port {}", proxyPort);
 
-        server = new MitmproxyServer(new InetSocketAddress(LOCALHOST_IP, WEBSOCKET_PORT), messageInterceptor);
+        server = new MitmproxyServer(new InetSocketAddress(LOCALHOST_IP, webSocketPort), messageInterceptor);
         server.setReuseAddr(true);
         server.start();
 
