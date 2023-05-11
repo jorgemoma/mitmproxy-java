@@ -56,6 +56,7 @@ public class MitmproxyJava {
         log.info("Starting mitmproxy on port {}", proxyPort);
 
         server = new MitmproxyServer(new InetSocketAddress(LOCALHOST_IP, WEBSOCKET_PORT), messageInterceptor);
+        server.setReuseAddr(true);
         server.start();
 
         // python script file is zipped inside our jar. extract it into a temporary file.
